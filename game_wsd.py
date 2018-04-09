@@ -9,18 +9,33 @@ from nltk.util import ngrams
 from itertools import product
 import numpy as np
 
+from nltk.corpus import stopwords
 
+stop_words = set(stopwords.words('english'))
+stop_words.update(('and','I','A','And','So','arnt','This','When','It','many','Many','so','cant','Yes','yes','No','no','These','these','there','There'))
 # def get_z():
 
 # On the train, he listened to a music track
-word_list = ["train", "listen", "music", "track"]
+#word_list = ["train", "listen", "music", "track"]
 
 # I need money to pay doctor's bills
 # word_list = ["need","money","pay","doctor","bill"]
 
 # There is a financial institution near the river bank
-# word_list = ["financial", "institution", "river", "bank"]
+sentence = input("Enter a sentence\n")
+word_tokens = nltk.word_tokenize(sentence)
+word_list = []
+ 
+for w in word_tokens:
+    if w not in stop_words:
+        word_list.append(w)
+ 
+print(word_list)
 
+
+#word_list = ["financial", "institution", "river", "bank"]
+#print(wordnet.synsets("bank")[0].lemmas()[1].name())
+#print(wordnet.synsets("bank")[0].name())
 n = 15
 
 # Creating w matrix
@@ -64,7 +79,7 @@ for i in range(len(word_list)):
 	w[i][i] = 1
 
 
-print(w)
+#print(w)
 # Calculating mean of w
 mean = 0.0
 for i in range(len(word_list)):
@@ -78,7 +93,7 @@ for i in range(len(word_list)-1):
 	w[i+1][i] += mean
 		
 
-print(w)
+#print(w)
 
 # Creating list of senses of each word in word_list
 senses = [0 for i in range(len(word_list))]
@@ -119,16 +134,20 @@ for _ in range(20):
 		y[i] = np.multiply(x[i], u1/u2)
 	x = y
 
-	if _ == 0:
-		for word in word_list:
-			i = word_list.index(word)
-			print(x[i], word_list[i])	
+	# if _ == 0:
+	# 	for word in word_list:
+	# 		i = word_list.index(word)
+	# 		#print(x[i], word_list[i])	
 
 
 for word in word_list:
 	i = word_list.index(word)
-	print(x[i], word_list[i])	
-
+	#print(x[i], word_list[i])
+	high_ind=x[i].argmax()
+	#print(high_ind)
+	print("Word to be Disambiguated:  ", word)
+	print("Sense alotted: ",wordnet.synsets(word)[high_ind].lemmas()[0].name())	
+	print("Definition of sense alotted: ",wordnet.synsets(word)[high_ind].definition())
 
 
 
